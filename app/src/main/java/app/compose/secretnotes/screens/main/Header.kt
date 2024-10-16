@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -29,13 +31,13 @@ fun Header() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Green80)
+            .background(Green80, shape = RoundedCornerShape(10.dp))
             .padding(top = 45.dp)
-            .alpha(0.8f),
+            .alpha(0.8f)
+            .clip(RoundedCornerShape(20.dp)),
+        Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    )
-    {
+    ) {
         DefaultIconWhite(drawable.app_icon)
         Text(
             modifier = Modifier.padding(5.dp),
@@ -50,10 +52,10 @@ fun Header() {
 }
 
 @Composable
-fun DefaultIconWhite (res: Int) {
+fun DefaultIconWhite(res: Int) {
     Icon(
         painterResource(id = res),
-        contentDescription = "Add note",
+        contentDescription = "",
         tint = Color.White,
         modifier = Modifier
             .padding(10.dp)
@@ -62,10 +64,11 @@ fun DefaultIconWhite (res: Int) {
 }
 
 @Composable
-fun Background () {
+fun Background() {
     Image(
         painterResource(id = drawable.background),
         contentDescription = "",
         contentScale = ContentScale.FillBounds,
-        modifier = Modifier.fillMaxSize())
+        modifier = Modifier.fillMaxSize()
+    )
 }
