@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "460576037206",
+    "project_id": "secret-notes-b60b4",
+    "storage_bucket": "secret-notes-b60b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460576037206:android:8515dd0282be4c6b4a9ef7",
+        "android_client_info": {
+          "package_name": "app.compose.secretnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDExFrpfhKHtjXWn_qyxHXEKD2U56I4t3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
