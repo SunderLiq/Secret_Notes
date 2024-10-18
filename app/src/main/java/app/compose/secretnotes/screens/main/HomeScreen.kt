@@ -3,11 +3,14 @@ package app.compose.secretnotes.screens.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,31 +26,46 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import app.compose.secretnotes.R.drawable
+import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Green80
 
 @Composable
-fun Header() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Green80, shape = RoundedCornerShape(10.dp))
-            .padding(top = 45.dp)
-            .alpha(0.8f)
-            .clip(RoundedCornerShape(20.dp)),
-        Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        DefaultIconWhite(drawable.app_icon)
-        Text(
-            modifier = Modifier.padding(5.dp),
-            text = "Secret Notes",
-            style = TextStyle(fontSize = 20.sp, color = Color.White)
-        )
-        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.size(50.dp)) {
-            DefaultIconWhite(drawable.add_note_icon)
-        }
+fun HomeScreen(navController: NavController, list: List<DataNote>) {
+    Background()
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Green80, shape = RoundedCornerShape(10.dp))
+                .padding(top = 45.dp)
+                .alpha(0.8f)
+                .clip(RoundedCornerShape(20.dp)),
+            Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            DefaultIconWhite(drawable.app_icon)
+            Text(
+                modifier = Modifier.padding(5.dp),
+                text = "Secret Notes",
+                style = TextStyle(fontSize = 20.sp, color = Color.White)
+            )
+            IconButton(
+                onClick = { navController.navigate("addNoteScreen") },
+                modifier = Modifier.size(50.dp)
+            ) {
+                DefaultIconWhite(drawable.add_note_icon)
+            }
 
+        }
+        LazyColumn(Modifier.fillMaxSize()) {
+            itemsIndexed(
+                list
+            ) { _, item ->
+                NoteItem(item)
+            }
+        }
     }
 }
 
