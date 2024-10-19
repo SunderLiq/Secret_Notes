@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,11 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R.drawable
-import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Green80
 
 @Composable
-fun HomeScreen(navController: NavController, list: List<DataNote>) {
+fun HomeScreen(navController: NavController) {
     Background()
     Column {
         Row(
@@ -49,7 +46,7 @@ fun HomeScreen(navController: NavController, list: List<DataNote>) {
             Text(
                 modifier = Modifier.padding(5.dp),
                 text = "Secret Notes",
-                style = TextStyle(fontSize = 20.sp, color = Color.White)
+                style = TextStyle(fontSize = 25.sp, color = Color.White)
             )
             IconButton(
                 onClick = { navController.navigate("addNoteScreen") },
@@ -59,13 +56,7 @@ fun HomeScreen(navController: NavController, list: List<DataNote>) {
             }
 
         }
-        LazyColumn(Modifier.fillMaxSize()) {
-            itemsIndexed(
-                list
-            ) { _, item ->
-                NoteItem(item)
-            }
-        }
+        NotesList()
     }
 }
 

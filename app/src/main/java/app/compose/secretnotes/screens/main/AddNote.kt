@@ -1,5 +1,7 @@
 package app.compose.secretnotes.screens.main
 
+import android.annotation.SuppressLint
+import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,13 +36,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
+import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green80
 import app.compose.secretnotes.ui.theme.LightGreen20
 import app.compose.secretnotes.ui.theme.LightGreen80
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.util.Date
 
+var label = ""
+var text = ""
+
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun AddNote(navController: NavController) {
+    val fs = Firebase.firestore
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +76,8 @@ fun AddNote(navController: NavController) {
                 style = TextStyle(fontSize = 20.sp, color = Color.White)
             )
             IconButton(
-                onClick = { navController.navigate("mainScreen") }, modifier = Modifier
+                onClick = { navController.navigate("mainScreen") },
+                modifier = Modifier
                     .size(50.dp)
                     .rotate(315f)
             ) {
@@ -77,21 +90,28 @@ fun AddNote(navController: NavController) {
                 .fillMaxSize()
                 .padding(20.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(LightGreen20),
-            verticalArrangement = Arrangement.SpaceBetween
+                .background(LightGreen20), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 LabelTextField()
                 NoteTextField()
             }
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val sdf = SimpleDateFormat("HH:mm dd-M-yyyy")
+                    val currentDate = sdf.format(Date())
+                    fs.collection("Notes").document().set(
+                            DataNote(
+                                label, text, currentDate
+                            )
+                        )
+                    navController.navigate("mainScreen")
+                },
                 modifier = Modifier
                     .padding(bottom = 10.dp)
                     .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
-                    containerColor = Green80
+                    contentColor = Color.White, containerColor = Green80
                 )
             ) {
                 Text(text = "Save", style = TextStyle(fontSize = 20.sp))
@@ -103,7 +123,6 @@ fun AddNote(navController: NavController) {
 @Composable
 fun LabelTextField() {
     var labelText by remember { mutableStateOf("") }
-
     TextField(
         value = labelText,
         onValueChange = { labelText = it },
@@ -127,6 +146,7 @@ fun LabelTextField() {
         ),
         shape = RoundedCornerShape(20.dp)
     )
+    label = labelText
 }
 
 @Composable
@@ -151,4 +171,5 @@ fun NoteTextField() {
         ),
         shape = RoundedCornerShape(20.dp),
     )
+    text = noteText
 }
