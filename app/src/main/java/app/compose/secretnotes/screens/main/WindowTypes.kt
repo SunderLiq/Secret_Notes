@@ -11,10 +11,14 @@ fun MainScreen() {
 
     NavHost(navController = navController, startDestination = "mainScreen") {
         composable("mainScreen") {
+            noteId = 0
             HomeScreen(navController = navController)
         }
         composable("addNoteScreen") {
             AddNote(navController = navController)
+        }
+        composable("editNoteScreen") {
+            EditNote(navController = navController)
         }
     }
 }

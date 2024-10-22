@@ -28,6 +28,8 @@ import androidx.navigation.NavController
 import app.compose.secretnotes.R.drawable
 import app.compose.secretnotes.ui.theme.Green80
 
+var noteId: Int = 0
+
 @Composable
 fun HomeScreen(navController: NavController) {
     Background()
@@ -56,7 +58,7 @@ fun HomeScreen(navController: NavController) {
             }
 
         }
-        NotesList()
+        NotesList(navController = navController)
     }
 }
 

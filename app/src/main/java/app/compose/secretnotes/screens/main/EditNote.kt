@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
-import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green80
 import app.compose.secretnotes.ui.theme.LightGreen20
@@ -45,12 +44,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
 
-var label = ""
-var text = ""
-
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun AddNote(navController: NavController) {
+fun EditNote(navController: NavController) {
     val fs = Firebase.firestore
 
     Box(
@@ -93,18 +89,18 @@ fun AddNote(navController: NavController) {
                 .background(LightGreen20), verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                NoteLabelField()
-                NoteTextField()
+                EditLabelField()
+                EditTextField()
             }
             Button(
                 onClick = {
                     val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
                     val currentDate = sdf.format(Date())
-                    fs.collection("Notes").document((noteId+1).toString()).set(
-                            DataNote(
-                                label, text, currentDate, (noteId+1).toString()
-                            )
-                        )
+                    fs.collection("Notes").document(noteEditId).update(
+                        "dateOfChange", currentDate,
+                        "label", label,
+                        "text", text
+                    )
                     navController.navigate("mainScreen")
                 },
                 modifier = Modifier
@@ -121,8 +117,8 @@ fun AddNote(navController: NavController) {
 }
 
 @Composable
-fun NoteLabelField() {
-    var labelText by remember { mutableStateOf("") }
+fun EditLabelField() {
+    var labelText by remember { mutableStateOf(label) }
     TextField(
         value = labelText,
         onValueChange = { labelText = it },
@@ -150,8 +146,8 @@ fun NoteLabelField() {
 }
 
 @Composable
-fun NoteTextField() {
-    var noteText by remember { mutableStateOf("") }
+fun EditTextField() {
+    var noteText by remember { mutableStateOf(text) }
 
     TextField(
         value = noteText,

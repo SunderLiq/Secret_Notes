@@ -1,6 +1,7 @@
 package app.compose.secretnotes.screens.main
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,13 +23,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Green40
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
+var noteEditId = ""
+
 @Composable
-fun NotesList() {
+fun NotesList(navController: NavController) {
     val fs = Firebase.firestore
     val listNotes = remember {
         mutableStateOf(emptyList<DataNote>())
@@ -43,11 +47,18 @@ fun NotesList() {
     Spacer(modifier = Modifier.height(10.dp))
     LazyColumn(Modifier.fillMaxSize()) {
         items(listNotes.value) { note ->
+
+            noteId++
             Column(
-                Modifier
+                modifier = Modifier
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
                     .fillMaxSize()
                     .background(Green40, shape = RoundedCornerShape(10.dp))
+                    .clickable {
+                        label = note.label
+                        text = note.text
+                        noteEditId = note.id
+                        navController.navigate("editNoteScreen")}
             )
             {
                 Row(
@@ -57,7 +68,10 @@ fun NotesList() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = note.label, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+                    Text(
+                        text = note.label,
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    )
                     Text(
                         text = note.dateOfChange,
                         style = TextStyle(fontSize = 15.sp)
