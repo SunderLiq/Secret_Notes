@@ -45,9 +45,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
 
-var label = ""
-var text = ""
-
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun AddNote(navController: NavController) {
@@ -69,11 +66,12 @@ fun AddNote(navController: NavController) {
             Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // Leave to HomeScreen
             DefaultIconWhite(R.drawable.app_icon)
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = "Secret Notes",
-                style = TextStyle(fontSize = 20.sp, color = Color.White)
+                text = "Create Note",
+                style = TextStyle(fontSize = 25.sp, color = Color.White)
             )
             IconButton(
                 onClick = { navController.navigate("mainScreen") },
@@ -96,6 +94,7 @@ fun AddNote(navController: NavController) {
                 NoteLabelField()
                 NoteTextField()
             }
+            // Create new note
             Button(
                 onClick = {
                     val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
@@ -108,11 +107,12 @@ fun AddNote(navController: NavController) {
                     navController.navigate("mainScreen")
                 },
                 modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .padding(bottom = 8.dp, end = 10.dp)
+                    .align(Alignment.End),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = Green80
-                )
+                ),
+                shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Save", style = TextStyle(fontSize = 20.sp))
             }

@@ -40,9 +40,13 @@ import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green80
 import app.compose.secretnotes.ui.theme.LightGreen20
 import app.compose.secretnotes.ui.theme.LightGreen80
+import app.compose.secretnotes.ui.theme.DarkGreen20
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
+
+var label = "" // Display label note in TextField
+var text = "" // Display text note in TextField
 
 @SuppressLint("SimpleDateFormat")
 @Composable
@@ -65,11 +69,12 @@ fun EditNote(navController: NavController) {
             Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // Leave to HomeScreen
             DefaultIconWhite(R.drawable.app_icon)
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = "Secret Notes",
-                style = TextStyle(fontSize = 20.sp, color = Color.White)
+                text = "Edit Note",
+                style = TextStyle(fontSize = 25.sp, color = Color.White)
             )
             IconButton(
                 onClick = { navController.navigate("mainScreen") },
@@ -92,26 +97,41 @@ fun EditNote(navController: NavController) {
                 EditLabelField()
                 EditTextField()
             }
-            Button(
-                onClick = {
-                    val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
-                    val currentDate = sdf.format(Date())
-                    fs.collection("Notes").document(noteEditId).update(
-                        "dateOfChange", currentDate,
-                        "label", label,
-                        "text", text
-                    )
+            Row (modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween){
+                // Delete note
+                Button(onClick = {
+                    fs.collection("Notes").document(noteEditId).delete()
                     navController.navigate("mainScreen")
                 },
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White, containerColor = Green80
-                )
-            ) {
-                Text(text = "Save", style = TextStyle(fontSize = 20.sp))
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White, containerColor = DarkGreen20
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = "Delete", style = TextStyle(fontSize = 20.sp))
+                }
+                // Save note
+                Button(
+                    onClick = {
+                        val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
+                        val currentDate = sdf.format(Date())
+                        fs.collection("Notes").document(noteEditId).update(
+                            "dateOfChange", currentDate,
+                            "label", label,
+                            "text", text
+                        )
+                        navController.navigate("mainScreen")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White, containerColor = Green80
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(text = "Save", style = TextStyle(fontSize = 20.sp))
+                }
             }
+
         }
     }
 }

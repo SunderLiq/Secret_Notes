@@ -29,7 +29,7 @@ import app.compose.secretnotes.ui.theme.Green40
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-var noteEditId = ""
+var noteEditId = "" // Variable to save ID selected note
 
 @Composable
 fun NotesList(navController: NavController) {

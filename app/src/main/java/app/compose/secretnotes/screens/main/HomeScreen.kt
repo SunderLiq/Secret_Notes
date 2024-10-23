@@ -28,7 +28,7 @@ import androidx.navigation.NavController
 import app.compose.secretnotes.R.drawable
 import app.compose.secretnotes.ui.theme.Green80
 
-var noteId: Int = 0
+var noteId: Int = 0 // count of notes in screen
 
 @Composable
 fun HomeScreen(navController: NavController) {
