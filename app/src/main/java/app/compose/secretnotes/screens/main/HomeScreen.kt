@@ -1,5 +1,6 @@
 package app.compose.secretnotes.screens.main
 
+import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,8 +26,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.R
 import app.compose.secretnotes.R.drawable
 import app.compose.secretnotes.ui.theme.Green80
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 
 var noteId: Int = 0 // count of notes in screen
 

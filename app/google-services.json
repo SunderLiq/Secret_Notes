@@ -12,7 +12,12 @@
           "package_name": "app.compose.secretnotes"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "460576037206-2r1m2inqoknnd7mo1k4fl2hehpbh2rn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDExFrpfhKHtjXWn_qyxHXEKD2U56I4t3w"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "460576037206-2r1m2inqoknnd7mo1k4fl2hehpbh2rn6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
