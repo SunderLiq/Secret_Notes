@@ -3,11 +3,13 @@ package app.compose.secretnotes.login
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green40
 import app.compose.secretnotes.ui.theme.LightGreen20
@@ -36,16 +39,17 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun AuthScreen(navController: NavController) {
+fun SignInScreen(navController: NavController) {
     val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
     Column(
+
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Sign up", style = TextStyle(fontSize = 25.sp))
+        Text(text = "Sign in", style = TextStyle(fontSize = 25.sp))
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
             value = userNameState,
@@ -91,28 +95,40 @@ fun AuthScreen(navController: NavController) {
             shape = RoundedCornerShape(20.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Button(onClick = {
-            signUp(auth, userNameState, passwordState)
+        Row { Button(onClick = {
+            navController.navigate("SignUpScreen")
         },
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White, containerColor = Green40
             ),
             shape = RoundedCornerShape(15.dp)
         ){
-            Text(text = "Let's start!", style = TextStyle(fontSize = 20.sp))
+            Text(text = "Sing Up", style = TextStyle(fontSize = 20.sp))
+        }
+            Spacer(modifier = Modifier.width(40.dp))
+            Button(onClick = {
+                signIn(auth, userNameState, passwordState, navController)
+            },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White, containerColor = DarkGreen20
+                ),
+                shape = RoundedCornerShape(15.dp)
+            ){
+                Text(text = "Continue", style = TextStyle(fontSize = 20.sp))
+            }
         }
 
     }
 }
 
-private fun signUp(auth: FirebaseAuth, email: String, password: String) {
-    auth.createUserWithEmailAndPassword(email, password)
+private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController) {
+    auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { task ->
             if (task.isSuccessful){
-                Log.d("myLog", "Sing up is successful!")
-
+                Log.d("myLog", "Login is successful!")
+                navController.navigate("mainScreen")
             }
             else
-                Log.d("myLog", "Sing up is failure(")
+                Log.d("myLog", "Login is failure(")
         }
 }
