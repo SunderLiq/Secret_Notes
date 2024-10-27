@@ -1,4 +1,4 @@
-package app.compose.secretnotes.screens.main
+package app.compose.secretnotes.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
+import app.compose.secretnotes.ui.theme.Red80
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -36,7 +36,21 @@ fun LogOut(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Column (horizontalAlignment = Alignment.CenterHorizontally){
             Spacer(modifier = Modifier.height(45.dp))
+            Text(text = "Current account: ${auth.currentUser?.email}", style = TextStyle(fontSize = 20.sp))
+            Button(modifier = Modifier.padding(top = 5.dp),
+                onClick = {
+                    // TODO Delete account
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White, containerColor = Red80
+                ),
+                shape = RoundedCornerShape(15.dp)
+            ) {
+                Text(text = "Delete account!!!", style = TextStyle(fontSize = 20.sp))
+            }
+        }
         Column (horizontalAlignment = Alignment.CenterHorizontally){
             Text(text = "Do you want logout? ", style = TextStyle(fontSize = 30.sp))
             Button(modifier = Modifier.padding(top = 25.dp),

@@ -43,6 +43,7 @@ fun SignInScreen(navController: NavController) {
     val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
+    var signInError by remember { mutableStateOf("") }
     Column(
 
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,7 +108,8 @@ fun SignInScreen(navController: NavController) {
         }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
-                signIn(auth, userNameState, passwordState, navController)
+                if(!signIn(auth, userNameState, passwordState, navController))
+                    signInError = "Wrong username of password"
             },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = DarkGreen20
@@ -117,18 +119,28 @@ fun SignInScreen(navController: NavController) {
                 Text(text = "Continue", style = TextStyle(fontSize = 20.sp))
             }
         }
-
+        Text(text = signInError, style = TextStyle(fontSize = 15.sp, textAlign = TextAlign.Center))
     }
 }
 
-private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController) {
-    auth.signInWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful){
-                Log.d("myLog", "Login is successful!")
-                navController.navigate("mainScreen")
+private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController):Boolean {
+    var itsOk = true
+    try {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("myLog", "Login is successful!")
+                    navController.navigate("mainScreen")
+                }
+                else{
+                    Log.d("myLog", "Login is field!. No exception")
+                    itsOk = false
+                }
             }
-            else
-                Log.d("myLog", "Login is failure(")
-        }
+    }
+    catch (e: Exception){
+        Log.d("myLog", "Login is field!")
+        itsOk = false
+    }
+    return itsOk
 }

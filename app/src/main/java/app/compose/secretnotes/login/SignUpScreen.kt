@@ -43,6 +43,7 @@ fun SignUpScreen(navController: NavController) {
     val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
+    var signUpError by remember { mutableStateOf("") }
     Column(
 
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,7 +108,8 @@ fun SignUpScreen(navController: NavController) {
         }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
-                signIn(auth, userNameState, passwordState, navController)
+                if(!signIn(auth, userNameState, passwordState, navController))
+                    signUpError = "The password must contain from 6 to 20 characters of the Latin alphabet and numbers"
             },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = DarkGreen20
@@ -117,18 +119,27 @@ fun SignUpScreen(navController: NavController) {
                 Text(text = "Let's start!", style = TextStyle(fontSize = 20.sp))
             }
         }
-
+        Text(text = signUpError, style = TextStyle(fontSize =  15.sp, textAlign = TextAlign.Center))
     }
 }
-private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController) {
-    auth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful){
-                Log.d("myLog", "Sing up is successful!")
-                navController.navigate("mainScreen")
-            }
-            else
-                Log.d("myLog", "Sing up is failure(")
-            navController.navigate("SignUpScreen")
+private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController):Boolean {
+    var itsOk = true
+    try {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    Log.d("myLog", "Sing up is successful!")
+                    navController.navigate("mainScreen")
+                }
+                else {
+                    Log.d("myLog", "Sing up is failure(. No exception")
+                }
+    }
+
         }
+    catch (e: Exception) {
+        Log.d("myLog", "Sing up is failure(")
+        itsOk = false
+    }
+    return itsOk
 }
