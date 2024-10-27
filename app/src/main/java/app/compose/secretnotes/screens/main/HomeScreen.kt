@@ -1,7 +1,5 @@
 package app.compose.secretnotes.screens.main
 
-import android.app.Activity
-import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -29,6 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R.drawable
+import app.compose.secretnotes.dialog.SignInDialog
+import app.compose.secretnotes.dialog.SignUpDialog
+import app.compose.secretnotes.dialog.successfulSignIn
+import app.compose.secretnotes.dialog.successfulSignUp
 import app.compose.secretnotes.ui.theme.Green80
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,6 +41,10 @@ fun HomeScreen(navController: NavController) {
     val auth = Firebase.auth
     Background()
     Column {
+        if (successfulSignIn)SignInDialog()
+        successfulSignIn = false
+        if (successfulSignUp)SignUpDialog()
+        successfulSignUp = false
         Row(
             modifier = Modifier
                 .fillMaxWidth()

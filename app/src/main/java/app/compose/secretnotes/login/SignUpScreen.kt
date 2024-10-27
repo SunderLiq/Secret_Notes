@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.dialog.successfulSignUp
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green40
@@ -43,7 +46,7 @@ fun SignUpScreen(navController: NavController) {
     val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
-    var signUpError by remember { mutableStateOf("") }
+    val signUpError = remember { mutableStateOf("") }
     Column(
 
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,7 +96,8 @@ fun SignUpScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = LightGreen20,
             ),
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(20.dp),
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row { Button(onClick = {
@@ -108,8 +112,7 @@ fun SignUpScreen(navController: NavController) {
         }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
-                if(!signIn(auth, userNameState, passwordState, navController))
-                    signUpError = "The password must contain from 6 to 20 characters of the Latin alphabet and numbers"
+                signUp(signUpError, auth, userNameState, passwordState, navController)
             },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = DarkGreen20
@@ -119,19 +122,21 @@ fun SignUpScreen(navController: NavController) {
                 Text(text = "Let's start!", style = TextStyle(fontSize = 20.sp))
             }
         }
-        Text(text = signUpError, style = TextStyle(fontSize =  15.sp, textAlign = TextAlign.Center))
+        Text(text = signUpError.value, style = TextStyle(fontSize =  15.sp, textAlign = TextAlign.Center), modifier = Modifier.padding(top = 15.dp))
     }
 }
-private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController):Boolean {
-    var itsOk = true
+private fun signUp(error: MutableState<String>, auth: FirebaseAuth, email: String, password: String, navController: NavController) {
     try {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful){
+                    error.value = ""
                     Log.d("myLog", "Sing up is successful!")
+                    successfulSignUp = true
                     navController.navigate("mainScreen")
                 }
                 else {
+                    error.value = "The email must contain a sign @ and domain\nPassword must contain from 6 to 20 characters of the Latin alphabet and numbers"
                     Log.d("myLog", "Sing up is failure(. No exception")
                 }
     }
@@ -139,7 +144,6 @@ private fun signIn(auth: FirebaseAuth, email: String, password: String, navContr
         }
     catch (e: Exception) {
         Log.d("myLog", "Sing up is failure(")
-        itsOk = false
+        error.value = "Fields cannot be empty"
     }
-    return itsOk
 }

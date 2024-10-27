@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,10 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green40
@@ -43,7 +46,7 @@ fun SignInScreen(navController: NavController) {
     val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
-    var signInError by remember { mutableStateOf("") }
+    val signInError = remember { mutableStateOf("") }
     Column(
 
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,54 +96,61 @@ fun SignInScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = LightGreen20,
             ),
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(20.dp),
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Row { Button(onClick = {
-            navController.navigate("SignUpScreen")
-        },
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White, containerColor = Green40
-            ),
-            shape = RoundedCornerShape(15.dp)
-        ){
-            Text(text = "Sing Up", style = TextStyle(fontSize = 20.sp))
-        }
+        Row {
+            Button(
+                onClick = {
+                    navController.navigate("SignUpScreen")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White, containerColor = Green40
+                ),
+                shape = RoundedCornerShape(15.dp)
+            ) {
+                Text(text = "Sing Up", style = TextStyle(fontSize = 20.sp))
+            }
             Spacer(modifier = Modifier.width(40.dp))
-            Button(onClick = {
-                if(!signIn(auth, userNameState, passwordState, navController))
-                    signInError = "Wrong username of password"
-            },
+            Button(
+                onClick = {
+                    signIn(signInError,auth, userNameState, passwordState, navController)
+                },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = DarkGreen20
                 ),
                 shape = RoundedCornerShape(15.dp)
-            ){
+            ) {
                 Text(text = "Continue", style = TextStyle(fontSize = 20.sp))
             }
         }
-        Text(text = signInError, style = TextStyle(fontSize = 15.sp, textAlign = TextAlign.Center))
+        Text(text = signInError.value, style = TextStyle(fontSize = 15.sp, textAlign = TextAlign.Center), modifier = Modifier.padding(top = 15.dp))
     }
 }
 
-private fun signIn(auth: FirebaseAuth, email: String, password: String, navController: NavController):Boolean {
-    var itsOk = true
+private fun signIn(
+    error: MutableState<String>,
+    auth: FirebaseAuth,
+    email: String,
+    password: String,
+    navController: NavController
+) {
     try {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    error.value = ""
                     Log.d("myLog", "Login is successful!")
+                    successfulSignIn = true
                     navController.navigate("mainScreen")
-                }
-                else{
+                } else {
                     Log.d("myLog", "Login is field!. No exception")
-                    itsOk = false
+                    error.value = "Incorrect email or password"
                 }
             }
-    }
-    catch (e: Exception){
+    } catch (e: Exception) {
         Log.d("myLog", "Login is field!")
-        itsOk = false
+        error.value = "Fields cannot be empty"
     }
-    return itsOk
 }

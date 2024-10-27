@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.compose.secretnotes.dialog.DeleteAccountDialog
 import app.compose.secretnotes.login.LogOut
 import app.compose.secretnotes.login.SignInScreen
 import app.compose.secretnotes.login.SignUpScreen
@@ -83,8 +84,11 @@ fun MainScreen() {
         },
             exitTransition = {
                 return@composable slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(700))
-            }) {
+            }){
             LogOut(navController = navController)
+        }
+        composable("ConfirmDeleteScreen"){
+            DeleteAccountDialog(navController = navController, auth)
         }
     }
 }
