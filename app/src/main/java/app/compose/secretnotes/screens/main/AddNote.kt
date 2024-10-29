@@ -104,7 +104,7 @@ fun AddNote(navController: NavController) {
                 onClick = {
                     val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
                     val currentDate = sdf.format(Date())
-                    fb.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document((noteId+1).toString()).set(
+                    fb.collection("Notes").document("usersNotes").collection(auth.currentUser?.uid.toString()).document((noteId+1).toString()).set(
                             DataNote(
                                 label, text, currentDate, (noteId+1).toString()
                             )

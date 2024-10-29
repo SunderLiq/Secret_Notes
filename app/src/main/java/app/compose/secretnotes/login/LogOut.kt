@@ -90,7 +90,7 @@ internal fun deleteAccount(error: MutableState<String> ,navController: NavContro
     try {
         auth.currentUser?.reauthenticate(EmailAuthProvider.getCredential(email, password))?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                deleteUserData(email)
+                deleteUserData(auth.currentUser?.uid.toString())
                 auth.currentUser?.delete()?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         error.value = ""
@@ -114,12 +114,12 @@ internal fun deleteAccount(error: MutableState<String> ,navController: NavContro
     }
 }
 
-fun deleteUserData(email: String) {
+fun deleteUserData(uid: String) {
     val fb = Firebase.firestore
     for (i in 1..noteId) {
-        fb.collection("Notes").document("usersNotes").collection(email).document(
+        fb.collection("Notes").document("usersNotes").collection(uid).document(
             i.toString()
         ).delete()
-        Log.d("myLog", "$email $i note has been deleted")
+        Log.d("myLog", "$uid $i note has been deleted")
     }
 }

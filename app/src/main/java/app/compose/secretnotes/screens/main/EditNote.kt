@@ -105,7 +105,7 @@ fun EditNote(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween){
                 // Delete note
                 Button(onClick = {
-                    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document(
+                    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.uid.toString()).document(
                         noteEditId).delete()
                     navController.navigate("mainScreen")
                 },
@@ -121,7 +121,7 @@ fun EditNote(navController: NavController) {
                     onClick = {
                         val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
                         val currentDate = sdf.format(Date())
-                        fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document(
+                        fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.uid.toString()).document(
                             noteEditId).update(
                             "dateOfChange", currentDate,
                             "label", label,

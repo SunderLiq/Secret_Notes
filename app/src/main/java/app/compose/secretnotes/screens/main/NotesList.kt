@@ -39,7 +39,7 @@ fun NotesList(navController: NavController) {
     val listNotes = remember {
         mutableStateOf(emptyList<DataNote>())
     }
-    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).get().addOnCompleteListener{
+    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.uid.toString()).get().addOnCompleteListener{
         task ->
         if (task.isSuccessful){
             listNotes.value = task.result.toObjects(DataNote::class.java)
@@ -72,7 +72,8 @@ fun NotesList(navController: NavController) {
                 ) {
                     Text(
                         text = note.label,
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(end = 10.dp).fillParentMaxWidth(0.65f)
                     )
                     Text(
                         text = note.dateOfChange,
