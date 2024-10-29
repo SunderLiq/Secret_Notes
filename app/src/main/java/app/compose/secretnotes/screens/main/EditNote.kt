@@ -43,6 +43,7 @@ import app.compose.secretnotes.ui.theme.Green80
 import app.compose.secretnotes.ui.theme.LightGreen20
 import app.compose.secretnotes.ui.theme.LightGreen80
 import app.compose.secretnotes.ui.theme.DarkGreen20
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
@@ -54,6 +55,7 @@ var text = "" // Display text note in TextField
 @Composable
 fun EditNote(navController: NavController) {
     val fs = Firebase.firestore
+    val auth = Firebase.auth
 
     Box(
         modifier = Modifier
@@ -103,7 +105,8 @@ fun EditNote(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween){
                 // Delete note
                 Button(onClick = {
-                    fs.collection("Notes").document(noteEditId).delete()
+                    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document(
+                        noteEditId).delete()
                     navController.navigate("mainScreen")
                 },
                     colors = ButtonDefaults.buttonColors(
@@ -118,7 +121,8 @@ fun EditNote(navController: NavController) {
                     onClick = {
                         val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
                         val currentDate = sdf.format(Date())
-                        fs.collection("Notes").document(noteEditId).update(
+                        fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document(
+                            noteEditId).update(
                             "dateOfChange", currentDate,
                             "label", label,
                             "text", text

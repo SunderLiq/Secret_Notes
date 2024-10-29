@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.ui.theme.Green40
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -34,10 +35,11 @@ var noteEditId = "" // Variable to save ID selected note
 @Composable
 fun NotesList(navController: NavController) {
     val fs = Firebase.firestore
+    val auth = Firebase.auth
     val listNotes = remember {
         mutableStateOf(emptyList<DataNote>())
     }
-    fs.collection("Notes").get().addOnCompleteListener{
+    fs.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).get().addOnCompleteListener{
         task ->
         if (task.isSuccessful){
             listNotes.value = task.result.toObjects(DataNote::class.java)

@@ -43,6 +43,7 @@ import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Green80
 import app.compose.secretnotes.ui.theme.LightGreen20
 import app.compose.secretnotes.ui.theme.LightGreen80
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Date
@@ -50,7 +51,9 @@ import java.util.Date
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun AddNote(navController: NavController) {
-    val fs = Firebase.firestore
+    val fb = Firebase.firestore
+    val auth = Firebase.auth
+
 
     Box(
         modifier = Modifier
@@ -101,7 +104,7 @@ fun AddNote(navController: NavController) {
                 onClick = {
                     val sdf = SimpleDateFormat("yyyy-M-dd HH:mm")
                     val currentDate = sdf.format(Date())
-                    fs.collection("Notes").document((noteId+1).toString()).set(
+                    fb.collection("Notes").document("usersNotes").collection(auth.currentUser?.email.toString()).document((noteId+1).toString()).set(
                             DataNote(
                                 label, text, currentDate, (noteId+1).toString()
                             )

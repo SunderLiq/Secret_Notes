@@ -21,12 +21,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.screens.main.noteId
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.Red80
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
@@ -88,6 +90,7 @@ internal fun deleteAccount(error: MutableState<String> ,navController: NavContro
     try {
         auth.currentUser?.reauthenticate(EmailAuthProvider.getCredential(email, password))?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                deleteUserData(email)
                 auth.currentUser?.delete()?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         error.value = ""
@@ -108,5 +111,15 @@ internal fun deleteAccount(error: MutableState<String> ,navController: NavContro
         error.value = "Fields cannot be empty"
         Log.d("myLog", "Failure delete account!")
 
+    }
+}
+
+fun deleteUserData(email: String) {
+    val fb = Firebase.firestore
+    for (i in 1..noteId) {
+        fb.collection("Notes").document("usersNotes").collection(email).document(
+            i.toString()
+        ).delete()
+        Log.d("myLog", "$email $i note has been deleted")
     }
 }
