@@ -1,7 +1,9 @@
 package app.compose.secretnotes.dialog
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -22,9 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.login.deleteAccount
+import app.compose.secretnotes.login.tokenId
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.auth.FirebaseAuth
+import com.stevdzasan.onetap.GoogleButtonTheme
+import com.stevdzasan.onetap.OneTapGoogleButton
+import com.stevdzasan.onetap.getUserFromTokenId
 
 @Composable
 fun DeleteAccountDialog(navController: NavController, auth: FirebaseAuth) {
@@ -67,6 +73,15 @@ fun DeleteAccountDialog(navController: NavController, auth: FirebaseAuth) {
                             ),
                             shape = RoundedCornerShape(20.dp),
                             visualTransformation = PasswordVisualTransformation()
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                        OneTapGoogleButton(
+                            clientId = tokenId,
+                            iconOnly = true,
+                            theme = GoogleButtonTheme.Neutral,
+                            onTokenIdReceived = { tokenId ->
+                                password.value = getUserFromTokenId(tokenId)?.sub!!
+                            },
                         )
                     }
                 },

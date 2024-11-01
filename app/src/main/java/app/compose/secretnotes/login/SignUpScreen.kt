@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.dialog.successfulSignUp
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
@@ -40,6 +41,9 @@ import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.stevdzasan.onetap.GoogleButtonTheme
+import com.stevdzasan.onetap.OneTapGoogleButton
+import com.stevdzasan.onetap.getUserFromTokenId
 
 @Composable
 fun SignUpScreen(navController: NavController) {
@@ -122,6 +126,26 @@ fun SignUpScreen(navController: NavController) {
                 Text(text = "Let's start!", style = TextStyle(fontSize = 20.sp))
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        OneTapGoogleButton(
+            clientId = tokenId,
+            theme = GoogleButtonTheme.Neutral,
+            onTokenIdReceived = { tokenId ->
+                auth.signInWithEmailAndPassword(getUserFromTokenId(tokenId)?.email!!, getUserFromTokenId(tokenId)?.sub!!)
+                    .addOnCompleteListener{ task ->
+                        if (task.isSuccessful) {
+                            successfulSignIn = true
+                            navController.navigate("mainScreen")
+                        }
+                        else {
+                            auth.createUserWithEmailAndPassword(getUserFromTokenId(tokenId)?.email!!, getUserFromTokenId(tokenId)?.sub!!)
+                            successfulSignUp = true
+                            navController.navigate("mainScreen")
+                        }
+                    }
+                Log.d( "myLog", auth.currentUser?.email!!)
+            },
+        )
         Text(text = signUpError.value, style = TextStyle(fontSize =  15.sp, textAlign = TextAlign.Center), modifier = Modifier.padding(top = 15.dp))
     }
 }
