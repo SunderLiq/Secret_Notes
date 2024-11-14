@@ -55,9 +55,6 @@ fun LogOut(navController: NavController) {
             ) {
                 Text(text = "Delete account!!!", style = TextStyle(fontSize = 20.sp))
             }
-        }
-        Column (horizontalAlignment = Alignment.CenterHorizontally){
-            Text(text = "Do you want logout? ", style = TextStyle(fontSize = 30.sp))
             Button(modifier = Modifier.padding(top = 25.dp),
                 onClick = {
                     auth.signOut()
@@ -69,6 +66,17 @@ fun LogOut(navController: NavController) {
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Logout", style = TextStyle(fontSize = 20.sp))
+            }
+            Button(modifier = Modifier.padding(top = 25.dp),
+                onClick = {
+                    navController.navigate("PINScreen")
+                },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White, containerColor = DarkGreen20
+                ),
+                shape = RoundedCornerShape(15.dp)
+            ) {
+                Text(text = "Change PIN", style = TextStyle(fontSize = 20.sp))
             }
         }
         Button(

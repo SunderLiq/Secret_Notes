@@ -6,3 +6,7 @@ data class DataNote(
     val dateOfChange: String = "",
     val id: String = ""
 ){}
+
+data class PINData(
+    val pin: String = ""
+){}

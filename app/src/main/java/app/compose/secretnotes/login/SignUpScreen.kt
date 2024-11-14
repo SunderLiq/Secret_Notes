@@ -139,8 +139,10 @@ fun SignUpScreen(navController: NavController) {
                         }
                         else {
                             auth.createUserWithEmailAndPassword(getUserFromTokenId(tokenId)?.email!!, getUserFromTokenId(tokenId)?.sub!!)
-                            successfulSignUp = true
-                            navController.navigate("mainScreen")
+                                .addOnCompleteListener{ _ ->
+                                    successfulSignUp = true
+                                    navController.navigate("mainScreen")
+                                }
                         }
                     }
                 Log.d( "myLog", auth.currentUser?.email!!)
