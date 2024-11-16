@@ -10,8 +10,8 @@ object hashing {
     //SHA-256
 
     @Throws (NoSuchAlgorithmException::class)
-    fun getHash(inByte: ByteArray, type: String): String {
-        val digestedBytes = MessageDigest.getInstance(type).digest(inByte)
+    fun getHash(inByte: ByteArray): String {
+        val digestedBytes = MessageDigest.getInstance("SHA-256").digest(inByte)
         return with(StringBuilder()) {
             digestedBytes.forEach { b -> append(String.format("%02X", b)) }
             toString().toLowerCase(Locale.ROOT)

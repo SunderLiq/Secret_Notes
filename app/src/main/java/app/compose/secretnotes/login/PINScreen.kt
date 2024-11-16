@@ -32,22 +32,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
-import app.compose.secretnotes.dataclasses.DataNote
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
-import app.compose.secretnotes.screens.main.noteId
 import app.compose.secretnotes.ui.theme.Gray20
 import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import java.nio.charset.Charset
 
 @Composable
 fun PINScreen(navController: NavController) {
     val auth = Firebase.auth
     val fb = Firebase.firestore
-    var PIN by remember { mutableStateOf("") }
-    var PinError by remember { mutableStateOf("") }
+    var pin by remember { mutableStateOf("") }
+    var pinError by remember { mutableStateOf("") }
     val pattern = remember { Regex("^\\d+\$") }
     IconButton(
         onClick = { navController.navigate("LogOutScreen") },
@@ -65,10 +65,10 @@ fun PINScreen(navController: NavController) {
     ) {
         Text(text = "Change your PIN")
         TextField(
-            value = PIN,
+            value = pin,
             onValueChange = {
                 if ((it.isEmpty() || it.matches(pattern)) && it.length <= 4) {
-                    PIN = it
+                    pin = it
                 }
             },
             placeholder = {
@@ -97,20 +97,21 @@ fun PINScreen(navController: NavController) {
                 Text("Back")
             }
             Button(onClick = {
-                if (PIN.length == 4){
+                if (pin.length == 4){
                     fb.collection("Notes").document("usersPIN")
-                        .collection(auth.currentUser?.uid.toString()).document("PIN").set(
+                        .collection(auth.currentUser?.uid.toString()).document("PIN_Hash").set(
                             PINData(
-                                PIN
+                                hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset()))
                             )
                         )
+                    Log.d("myLog", hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())))
                     navController.navigate("mainScreen")
                 }
-                else PinError = "The PIN code must contain 4 numbers"
+                else pinError = "The PIN code must contain 4 numbers"
             }) {
                 Text("Save")
             }
         }
-        Text(text = PinError, modifier = Modifier.padding(top = 15.dp))
+        Text(text = pinError, modifier = Modifier.padding(top = 15.dp))
     }
 }

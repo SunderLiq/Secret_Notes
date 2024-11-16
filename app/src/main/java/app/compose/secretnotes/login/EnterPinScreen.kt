@@ -1,9 +1,7 @@
 package app.compose.secretnotes.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
@@ -43,13 +42,14 @@ import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import java.nio.charset.Charset
 
 @Composable
 fun EnterPinScreen(navController: NavController) {
     val auth = Firebase.auth
     val fb = Firebase.firestore
-    var PIN by remember { mutableStateOf("") }
-    var PinError by remember { mutableStateOf("") }
+    var pin by remember { mutableStateOf("") }
+    var pinError by remember { mutableStateOf("") }
     val pattern = remember { Regex("^\\d+\$") }
     IconButton(
         onClick = { navController.navigate("LogOutScreen") },
@@ -69,10 +69,10 @@ fun EnterPinScreen(navController: NavController) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Enter your PIN")
             TextField(
-                value = PIN,
+                value = pin,
                 onValueChange = {
                     if ((it.isEmpty() || it.matches(pattern)) && it.length <= 4) {
-                        PIN = it
+                        pin = it
                     }
                 },
                 placeholder = {
@@ -101,20 +101,20 @@ fun EnterPinScreen(navController: NavController) {
             Button(onClick = {
                 fb.collection("Notes").document("usersPIN")
                     .collection(auth.currentUser?.uid.toString())
-                    .document("PIN").get().addOnCompleteListener { task ->
+                    .document("PIN_Hash").get().addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            if (PIN == task.result.toObject(PINData::class.java)?.pin!!) {
-                                PinError = ""
+                            if (hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())) == task.result.toObject(PINData::class.java)?.pin!!) {
+                                pinError = ""
                                 navController.navigate("mainScreen")
                             } else {
-                                PinError = "Enter correct pin"
+                                pinError = "Enter correct pin"
                             }
                         } else task.exception
                     }
             }) {
                 Text("OK")
             }
-            Text(text = PinError, modifier = Modifier.padding(top = 15.dp))
+            Text(text = pinError, modifier = Modifier.padding(top = 15.dp))
         }
         Button(
             modifier = Modifier

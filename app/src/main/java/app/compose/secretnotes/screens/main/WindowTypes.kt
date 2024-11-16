@@ -155,7 +155,7 @@ fun isPined (auth: FirebaseAuth, fb: FirebaseFirestore): Boolean {
     var ok by remember { mutableStateOf(true) }
     try {
         fb.collection("Notes").document("usersPIN").collection(auth.currentUser?.uid.toString())
-            .document("PIN").get().addOnCompleteListener { task ->
+            .document("PIN_Hash").get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     if (task.result.toObject(PINData::class.java)?.pin.isNullOrBlank()){
                         Log.d("myLog","NO PIN")
