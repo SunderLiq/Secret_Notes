@@ -1,13 +1,16 @@
 package app.compose.secretnotes.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -25,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,7 +59,7 @@ fun EnterPinScreen(navController: NavController) {
     IconButton(
         onClick = { navController.navigate("LogOutScreen") },
         modifier = Modifier
-            .size(50.dp)
+            .size(30.dp)
             .rotate(315f)
             .padding(top = 35.dp)
     ) {
@@ -65,13 +70,28 @@ fun EnterPinScreen(navController: NavController) {
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Button(
+            modifier = Modifier
+                .padding(top = 25.dp)
+                .fillMaxWidth(),
+            onClick = {
+                auth.signOut()
+                navController.navigate("SignInScreen")
+            },
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Color.White, containerColor = DarkGreen20
+            ),
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Text(text = "Logout", style = TextStyle(fontSize = 20.sp))
+        }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = "Enter your PIN")
             TextField(
+                readOnly = true,
                 value = pin,
                 onValueChange = {
-                    if ((it.isEmpty() || it.matches(pattern)) && it.length <= 4) {
+                    if ((it.isEmpty() || it.matches(pattern)) && it.length <= 3) {
                         pin = it
                     }
                 },
@@ -93,43 +113,232 @@ fun EnterPinScreen(navController: NavController) {
                     .fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
-                    focusedContainerColor = LightGreen20,
+                    focusedContainerColor = Color.White
                 ),
                 shape = RoundedCornerShape(20.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
             )
-            Button(onClick = {
-                fb.collection("Notes").document("usersPIN")
-                    .collection(auth.currentUser?.uid.toString())
-                    .document("PIN_Hash").get().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            if (hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())) == task.result.toObject(PINData::class.java)?.pin!!) {
-                                pinError = ""
-                                navController.navigate("mainScreen")
-                            } else {
-                                pinError = "Enter correct pin"
-                            }
-                        } else task.exception
-                    }
-            }) {
-                Text("OK")
-            }
             Text(text = pinError, modifier = Modifier.padding(top = 15.dp))
+            }
+        Column { //Number keyboard
+            Row { // 1 2 3
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "1"
+                    }
+                }) {
+                    Text(text = "1", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "2"
+                    }
+                }) {
+                    Text(text = "2", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "3"
+                    }
+                }) {
+                    Text(text = "3", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+            }
+            Row { // 4 5 6
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "4"
+                    }
+                }) {
+                    Text(text = "4", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "5"
+                    }
+                }) {
+                    Text(text = "5", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "6"
+                    }
+                }) {
+                    Text(text = "6", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+            }
+            Row { // 7 8 9
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "7"
+                    }
+                }) {
+                    Text(text = "7", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "8"
+                    }
+                }) {
+                    Text(text = "8", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "9"
+                    }
+                }) {
+                    Text(text = "9", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+            }
+            Row { // <- 0 ok
+                Button(modifier = Modifier
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.isNotEmpty()) {
+                        pin = pin.dropLast(1)
+                    }
+                }) {
+                    Image(painterResource(R.drawable.backspace_icon),
+                        contentDescription = "Confirm button",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.padding(10.dp))
+                }
+                Button(modifier = Modifier
+                    .padding(3.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),
+                    onClick = {
+                    if ((pin.isEmpty() || pin.matches(pattern)) && pin.length <= 3) {
+                        pin += "0"
+                    }
+                }) {
+                    Text(text = "0", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(3.dp)
+                        .size(105.dp, 90.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder(true),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.elevatedButtonElevation(2.dp),onClick = {
+                    fb.collection("Notes").document("usersPIN")
+                        .collection(auth.currentUser?.uid.toString())
+                        .document("PIN_Hash").get().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                if (hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())) == task.result.toObject(PINData::class.java)?.pin!!) {
+                                    pinError = ""
+                                    navController.navigate("mainScreen")
+                                } else {
+                                    pinError = "Enter correct pin"
+                                }
+                            } else task.exception
+                        }
+                }) {
+                    Image(painterResource(R.drawable.confirm_icon),
+                        contentDescription = "Confirm button",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.padding(10.dp))
+                }
+            }
         }
-        Button(
-            modifier = Modifier
-                .padding(top = 25.dp)
-                .fillMaxWidth(),
-            onClick = {
-                auth.signOut()
-                navController.navigate("SignInScreen")
-            },
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White, containerColor = DarkGreen20
-            ),
-            shape = RoundedCornerShape(15.dp)
-        ) {
-            Text(text = "Logout", style = TextStyle(fontSize = 20.sp))
-        }
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
