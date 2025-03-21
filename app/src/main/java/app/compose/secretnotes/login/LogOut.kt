@@ -1,6 +1,7 @@
 package app.compose.secretnotes.login
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.screens.main.Background
 import app.compose.secretnotes.screens.main.noteId
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
+import app.compose.secretnotes.ui.theme.Green40
 import app.compose.secretnotes.ui.theme.Red80
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -32,8 +35,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun LogOut(navController: NavController) {
+fun LogOut(navController: NavController) {  
     val auth = Firebase.auth
+    Background()
     Column(
         Modifier
             .fillMaxSize()
@@ -43,7 +47,8 @@ fun LogOut(navController: NavController) {
     ) {
         Column (horizontalAlignment = Alignment.CenterHorizontally){
             Spacer(modifier = Modifier.height(45.dp))
-            Text(text = "Current account: ${auth.currentUser?.email}", style = TextStyle(fontSize = 20.sp))
+            Text(text = "Текущий аккаунт: ${auth.currentUser?.email}", style = TextStyle(fontSize = 20.sp), modifier = Modifier.background(Green40, shape = RoundedCornerShape(10.dp)).padding(5.dp))
+            Spacer(modifier = Modifier.height(120.dp))
             Button(modifier = Modifier.padding(top = 5.dp),
                 onClick = {
                     navController.navigate("ConfirmDeleteScreen")
@@ -53,7 +58,7 @@ fun LogOut(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Delete account!!!", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Удалить аккаунт", style = TextStyle(fontSize = 15.sp))
             }
             Button(modifier = Modifier.padding(top = 25.dp),
                 onClick = {
@@ -65,9 +70,9 @@ fun LogOut(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Logout", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Выйти из аккаунта", style = TextStyle(fontSize = 15.sp))
             }
-            Button(modifier = Modifier.padding(top = 25.dp),
+            Button(modifier = Modifier.padding(top = 30.dp),
                 onClick = {
                     navController.navigate("PINScreen")
                 },
@@ -76,7 +81,7 @@ fun LogOut(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Change PIN", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Изменить пин-код", style = TextStyle(fontSize = 15.sp))
             }
         }
         Button(
@@ -89,7 +94,7 @@ fun LogOut(navController: NavController) {
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Back", style = TextStyle(fontSize = 15.sp))
+            Text(text = "Назад", style = TextStyle(fontSize = 15.sp), color = Color.White)
         }
     }
 }

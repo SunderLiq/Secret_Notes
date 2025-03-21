@@ -71,7 +71,7 @@ fun PINScreen(navController: NavController) {
     ) {
         Spacer(Modifier.height(5.dp))
         Column {
-            Text(text = "Change your PIN")
+            Text(text = "Измените свой пин-код")
             TextField(
                 readOnly = true,
                 value = pin,
@@ -311,7 +311,7 @@ fun PINScreen(navController: NavController) {
                             Log.d("myLog", hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())))
                             navController.navigate("mainScreen")
                         }
-                        else pinError = "The PIN code must contain 4 numbers"
+                        else pinError = "Пин-код должен содержать 4 символа"
                     }) {
                     Image(
                         painterResource(R.drawable.confirm_icon),

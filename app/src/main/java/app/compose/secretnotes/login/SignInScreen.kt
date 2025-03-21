@@ -58,14 +58,14 @@ fun SignInScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Sign in", style = TextStyle(fontSize = 25.sp))
+        Text(text = "Войти в аккаунт", style = TextStyle(fontSize = 25.sp))
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
             value = userNameState,
             onValueChange = { userNameState = it },
             placeholder = {
                 Text(
-                    "Login",
+                    "Почта",
                     style = TextStyle(fontSize = 25.sp, color = Gray20),
                     textAlign = TextAlign.Center
                 )
@@ -87,7 +87,7 @@ fun SignInScreen(navController: NavController) {
             onValueChange = { passwordState = it },
             placeholder = {
                 Text(
-                    "Password",
+                    "Пароль",
                     style = TextStyle(fontSize = 25.sp, color = Gray20),
                     textAlign = TextAlign.Center
                 )
@@ -115,7 +115,7 @@ fun SignInScreen(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Sing Up", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Новый аккаунт", style = TextStyle(fontSize = 20.sp))
             }
             Spacer(modifier = Modifier.width(40.dp))
             Button(
@@ -127,7 +127,7 @@ fun SignInScreen(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Continue", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Вход", style = TextStyle(fontSize = 20.sp))
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -171,12 +171,12 @@ private fun signIn(
                     navController.navigate("mainScreen")
                 } else {
                     Log.d("myLog", "Login is field!. No exception")
-                    error.value = "Incorrect email or password"
+                    error.value = "Не верное сочетание почты и пароля\nПопробуйте ещё раз"
                 }
             }
     } catch (e: Exception) {
         Log.d("myLog", "Login is field!")
-        error.value = "Fields cannot be empty"
+        error.value = "Поля не могут быть пустыми"
     }
 }
 

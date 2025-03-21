@@ -77,7 +77,7 @@ fun EditNote(navController: NavController) {
             Spacer(modifier = Modifier.width(50.dp))
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = "Edit Note",
+                text = "Изменить заметку",
                 style = TextStyle(fontSize = 25.sp, color = Color.White)
             )
             IconButton(
@@ -114,7 +114,7 @@ fun EditNote(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(15.dp)
                 ) {
-                    Text(text = "Delete", style = TextStyle(fontSize = 20.sp))
+                    Text(text = "Удалить", style = TextStyle(fontSize = 20.sp))
                 }
                 // Save note
                 Button(
@@ -134,7 +134,7 @@ fun EditNote(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(15.dp)
                 ) {
-                    Text(text = "Save", style = TextStyle(fontSize = 20.sp))
+                    Text(text = "Сохранить", style = TextStyle(fontSize = 20.sp))
                 }
             }
 

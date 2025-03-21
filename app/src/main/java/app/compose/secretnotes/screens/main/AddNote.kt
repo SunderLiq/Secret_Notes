@@ -75,7 +75,7 @@ fun AddNote(navController: NavController) {
             Spacer(modifier = Modifier.width(50.dp))
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = "Create Note",
+                text = "Создать заметку",
                 style = TextStyle(fontSize = 25.sp, color = Color.White)
             )
             IconButton(
@@ -119,7 +119,7 @@ fun AddNote(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ) {
-                Text(text = "Save", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Сохранить", style = TextStyle(fontSize = 20.sp))
             }
         }
     }

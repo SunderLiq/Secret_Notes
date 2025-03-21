@@ -57,14 +57,14 @@ fun SignUpScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Sign up", style = TextStyle(fontSize = 25.sp))
+        Text(text = "Регистрация", style = TextStyle(fontSize = 25.sp))
         Spacer(modifier = Modifier.height(10.dp))
         TextField(
             value = userNameState,
             onValueChange = { userNameState = it },
             placeholder = {
                 Text(
-                    "Login",
+                    "Почта",
                     style = TextStyle(fontSize = 25.sp, color = Gray20),
                     textAlign = TextAlign.Center
                 )
@@ -86,7 +86,7 @@ fun SignUpScreen(navController: NavController) {
             onValueChange = { passwordState = it },
             placeholder = {
                 Text(
-                    "Password",
+                    "Пароль",
                     style = TextStyle(fontSize = 25.sp, color = Gray20),
                     textAlign = TextAlign.Center
                 )
@@ -112,7 +112,7 @@ fun SignUpScreen(navController: NavController) {
             ),
             shape = RoundedCornerShape(15.dp)
         ){
-            Text(text = "Sing In", style = TextStyle(fontSize = 20.sp))
+            Text(text = "Войти в аккаунт", style = TextStyle(fontSize = 20.sp))
         }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
@@ -123,7 +123,7 @@ fun SignUpScreen(navController: NavController) {
                 ),
                 shape = RoundedCornerShape(15.dp)
             ){
-                Text(text = "Let's start!", style = TextStyle(fontSize = 20.sp))
+                Text(text = "Создать", style = TextStyle(fontSize = 20.sp))
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -162,7 +162,7 @@ private fun signUp(error: MutableState<String>, auth: FirebaseAuth, email: Strin
                     navController.navigate("mainScreen")
                 }
                 else {
-                    error.value = "The email must contain a sign @ and domain\nPassword must contain from 6 to 20 characters of the Latin alphabet and numbers"
+                    error.value = "Ваш почтовый ящик должен содержать символ @ \nПароль должен содержать от 6 до 20 символов \nВ пароле можно использовать латинские буквы и цифры"
                     Log.d("myLog", "Sing up is failure(. No exception")
                 }
     }

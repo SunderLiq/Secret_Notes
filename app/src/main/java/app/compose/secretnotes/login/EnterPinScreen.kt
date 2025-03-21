@@ -83,10 +83,10 @@ fun EnterPinScreen(navController: NavController) {
             ),
             shape = RoundedCornerShape(15.dp)
         ) {
-            Text(text = "Logout", style = TextStyle(fontSize = 20.sp))
+            Text(text = "Выйти из аккаунта", style = TextStyle(fontSize = 20.sp))
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Enter your PIN")
+            Text(text = "Введите ваш пин-код")
             TextField(
                 readOnly = true,
                 value = pin,
@@ -97,7 +97,7 @@ fun EnterPinScreen(navController: NavController) {
                 },
                 placeholder = {
                     Text(
-                        "PIN",
+                        "Пин-код",
                         style = TextStyle(fontSize = 25.sp, color = Gray20),
                         textAlign = TextAlign.Center
                     )
