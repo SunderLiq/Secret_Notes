@@ -50,6 +50,9 @@ fun MainScreen() {
                 )
             }) {
             noteId = 0
+            BackHandler(true) {
+                Log.i("myLog", "Clicked back")
+            }
             HomeScreen(navController = navController)
         }
         composable("addNoteScreen", enterTransition = {

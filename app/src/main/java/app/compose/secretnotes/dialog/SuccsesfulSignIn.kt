@@ -32,7 +32,7 @@ fun SignInDialog() {
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Text(
-                        text = "Welcome back! ♥",
+                        text = "С возвращением ♥",
                         modifier = Modifier
                             .fillMaxSize()
                             .wrapContentSize(Alignment.Center),

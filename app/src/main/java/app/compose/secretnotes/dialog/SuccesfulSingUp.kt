@@ -32,7 +32,7 @@ fun SignUpDialog() {
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Text(
-                        text = "Welcome to Secret Notes!",
+                        text = "Добро пожаловать в приложение Secret Notes!",
                         modifier = Modifier
                             .fillMaxSize()
                             .wrapContentSize(Alignment.Center),
