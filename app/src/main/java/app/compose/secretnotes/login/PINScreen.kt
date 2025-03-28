@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.hashing.argon2
 import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
 import app.compose.secretnotes.ui.theme.Gray20
@@ -305,10 +306,10 @@ fun PINScreen(navController: NavController) {
                             fb.collection("Notes").document("usersPIN")
                                 .collection(auth.currentUser?.uid.toString()).document("PIN_Hash").set(
                                     PINData(
-                                        hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset()))
+                                        argon2(pin, auth.currentUser?.uid.toString())!!
                                     )
                                 )
-                            Log.d("myLog", hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())))
+                            Log.d("myLog", argon2(pin, auth.currentUser?.uid.toString())!!)
                             navController.navigate("mainScreen")
                         }
                         else pinError = "Пин-код должен содержать 4 символа"

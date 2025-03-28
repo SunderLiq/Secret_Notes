@@ -54,6 +54,8 @@ dependencies {
 
 
     implementation(platform(libs.com.google.firebase.firebase.bom2))
+    implementation(libs.bcprov.jdk15to18)
+    implementation(libs.bcpkix.jdk15to18)
     implementation(libs.firebase.auth)
     implementation(libs.onetapcompose)
     implementation(libs.play.services.auth)

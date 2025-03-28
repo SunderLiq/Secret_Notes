@@ -1,5 +1,6 @@
 package app.compose.secretnotes.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.dialog.successfulSignIn
+import app.compose.secretnotes.hashing.argon2
 import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
 import app.compose.secretnotes.ui.theme.DarkGreen20
@@ -123,7 +126,8 @@ fun EnterPinScreen(navController: NavController) {
         Column { //Number keyboard
             Row { // 1 2 3
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -139,7 +143,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "1", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -155,7 +160,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "2", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -173,7 +179,8 @@ fun EnterPinScreen(navController: NavController) {
             }
             Row { // 4 5 6
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -189,7 +196,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "4", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -205,7 +213,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "5", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -223,7 +232,8 @@ fun EnterPinScreen(navController: NavController) {
             }
             Row { // 7 8 9
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -239,7 +249,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "7", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -255,7 +266,8 @@ fun EnterPinScreen(navController: NavController) {
                     Text(text = "8", style = TextStyle(fontSize = 30.sp), modifier = Modifier.padding(20.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -293,7 +305,8 @@ fun EnterPinScreen(navController: NavController) {
                         modifier = Modifier.padding(10.dp))
                 }
                 Button(modifier = Modifier
-                    .padding(3.dp),
+                    .padding(3.dp)
+                    .size(105.dp, 90.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -319,12 +332,14 @@ fun EnterPinScreen(navController: NavController) {
                     border = ButtonDefaults.outlinedButtonBorder(true),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.elevatedButtonElevation(2.dp),onClick = {
+                        Log.d("myLog", argon2(pin, auth.currentUser?.uid.toString())!!)
                     fb.collection("Notes").document("usersPIN")
                         .collection(auth.currentUser?.uid.toString())
                         .document("PIN_Hash").get().addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                if (hashing.getHash(pin.toByteArray(charset = Charset.defaultCharset())) == task.result.toObject(PINData::class.java)?.pin!!) {
+                                if (argon2(pin, auth.currentUser?.uid.toString())!! == task.result.toObject(PINData::class.java)?.pin!!) {
                                     pinError = ""
+                                    successfulSignIn = true
                                     navController.navigate("mainScreen")
                                 } else {
                                     pinError = "Enter correct pin"
