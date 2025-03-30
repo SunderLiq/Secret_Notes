@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.bcpkix.jdk15to18)
     implementation(libs.firebase.auth)
     implementation(libs.onetapcompose)
+    implementation(libs.androidx.animation)
     implementation(libs.play.services.auth)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.ktx)

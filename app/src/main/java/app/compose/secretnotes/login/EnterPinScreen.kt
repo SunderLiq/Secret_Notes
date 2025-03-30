@@ -21,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.dialog.LoadingScreen
 import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.hashing.argon2
 import app.compose.secretnotes.hashing.hashing
@@ -50,6 +53,8 @@ import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 
 @Composable
@@ -59,6 +64,9 @@ fun EnterPinScreen(navController: NavController) {
     var pin by remember { mutableStateOf("") }
     var pinError by remember { mutableStateOf("") }
     val pattern = remember { Regex("^\\d+\$") }
+    var isLoading by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
     IconButton(
         onClick = { navController.navigate("LogOutScreen") },
         modifier = Modifier
@@ -332,20 +340,30 @@ fun EnterPinScreen(navController: NavController) {
                     border = ButtonDefaults.outlinedButtonBorder(true),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.elevatedButtonElevation(2.dp),onClick = {
-                        Log.d("myLog", argon2(pin, auth.currentUser?.uid.toString())!!)
-                    fb.collection("Notes").document("usersPIN")
-                        .collection(auth.currentUser?.uid.toString())
-                        .document("PIN_Hash").get().addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                if (argon2(pin, auth.currentUser?.uid.toString())!! == task.result.toObject(PINData::class.java)?.pin!!) {
-                                    pinError = ""
-                                    successfulSignIn = true
-                                    navController.navigate("mainScreen")
-                                } else {
-                                    pinError = "Enter correct pin"
-                                }
-                            } else task.exception
-                        }
+                        if (pin.length == 4){
+                            coroutineScope.launch {
+                                isLoading = true
+                                fb.collection("Notes").document("usersPIN")
+                                    .collection(auth.currentUser?.uid.toString())
+                                    .document("PIN_Hash").get().addOnCompleteListener { task ->
+                                        isLoading = false
+                                        if (task.isSuccessful) {
+                                            if (argon2(
+                                                    pin,
+                                                    auth.currentUser?.uid.toString()
+                                                )!! == task.result.toObject(PINData::class.java)?.pin!!
+                                            ) {
+                                                pinError = ""
+                                                successfulSignIn = true
+                                                navController.navigate("mainScreen")
+                                            } else {
+                                                pinError = "Enter correct pin"
+                                            }
+                                        } else task.exception
+                                    }
+                            }
+                    }
+                        else pinError = "Enter correct pin"
                 }) {
                     Image(painterResource(R.drawable.confirm_icon),
                         contentDescription = "Confirm button",
@@ -355,5 +373,12 @@ fun EnterPinScreen(navController: NavController) {
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
+    }
+    if (isLoading) {
+        LoadingScreen(isLoading)
+        LaunchedEffect(Unit) {
+            delay(2000)
+            isLoading = false
+        }
     }
 }

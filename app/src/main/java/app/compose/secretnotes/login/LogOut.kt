@@ -107,22 +107,18 @@ internal fun deleteAccount(error: MutableState<String> ,navController: NavContro
                 auth.currentUser?.delete()?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         error.value = ""
-                        Log.d("myLog", "Account $email was deleted!")
                         navController.navigate("SignUpScreen")
                     } else {
-                        Log.d("myLog", "Failure delete account!")
                         error.value = "Incorrect value"
                     }
                 }
             }
             else {
                 error.value = "Incorrect value"
-                Log.d("myLog", "Failure delete account!")
             }
         }
     } catch (e: Exception) {
         error.value = "Fields cannot be empty"
-        Log.d("myLog", "Failure delete account!")
 
     }
 }
@@ -133,6 +129,5 @@ fun deleteUserData(uid: String) {
         fb.collection("Notes").document("usersNotes").collection(uid).document(
             i.toString()
         ).delete()
-        Log.d("myLog", "$uid $i note has been deleted")
     }
 }

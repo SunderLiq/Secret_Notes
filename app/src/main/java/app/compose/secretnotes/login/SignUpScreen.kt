@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.dialog.LoadingScreen
 import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.dialog.successfulSignUp
 import app.compose.secretnotes.ui.theme.DarkGreen20
@@ -44,6 +46,7 @@ import com.google.firebase.ktx.Firebase
 import com.stevdzasan.onetap.GoogleButtonTheme
 import com.stevdzasan.onetap.OneTapGoogleButton
 import com.stevdzasan.onetap.getUserFromTokenId
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpScreen(navController: NavController) {
@@ -51,6 +54,7 @@ fun SignUpScreen(navController: NavController) {
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
     val signUpError = remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     Column(
 
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,6 +120,7 @@ fun SignUpScreen(navController: NavController) {
         }
             Spacer(modifier = Modifier.width(40.dp))
             Button(onClick = {
+                isLoading = true
                 signUp(signUpError, auth, userNameState, passwordState, navController)
             },
                 colors = ButtonDefaults.buttonColors(
@@ -145,31 +150,36 @@ fun SignUpScreen(navController: NavController) {
                                 }
                         }
                     }
-                Log.d( "myLog", auth.currentUser?.email!!)
             },
         )
         Text(text = signUpError.value, style = TextStyle(fontSize =  15.sp, textAlign = TextAlign.Center), modifier = Modifier.padding(top = 15.dp))
     }
+
+    if (isLoading) {
+        LoadingScreen(isLoading)
+        LaunchedEffect(Unit) {
+            delay(3000)
+            isLoading = false
+        }
+    }
 }
+
 private fun signUp(error: MutableState<String>, auth: FirebaseAuth, email: String, password: String, navController: NavController) {
     try {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful){
                     error.value = ""
-                    Log.d("myLog", "Sing up is successful!")
                     successfulSignUp = true
                     navController.navigate("mainScreen")
                 }
                 else {
                     error.value = "Ваш почтовый ящик должен содержать символ @ \nПароль должен содержать от 6 до 20 символов \nВ пароле можно использовать латинские буквы и цифры"
-                    Log.d("myLog", "Sing up is failure(. No exception")
                 }
     }
 
         }
     catch (e: Exception) {
-        Log.d("myLog", "Sing up is failure(")
         error.value = "Fields cannot be empty"
     }
 }

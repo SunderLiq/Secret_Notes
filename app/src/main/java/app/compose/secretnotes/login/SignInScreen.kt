@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.compose.secretnotes.dialog.LoadingScreen
 import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.dialog.successfulSignUp
 import app.compose.secretnotes.ui.theme.DarkGreen20
@@ -44,6 +46,7 @@ import com.google.firebase.ktx.Firebase
 import com.stevdzasan.onetap.GoogleButtonTheme
 import com.stevdzasan.onetap.OneTapGoogleButton
 import com.stevdzasan.onetap.getUserFromTokenId
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignInScreen(navController: NavController) {
@@ -51,6 +54,7 @@ fun SignInScreen(navController: NavController) {
     var userNameState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
     val signInError = remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(
 
@@ -120,6 +124,7 @@ fun SignInScreen(navController: NavController) {
             Spacer(modifier = Modifier.width(40.dp))
             Button(
                 onClick = {
+                    isLoading = true
                     signIn(signInError,auth, userNameState, passwordState, navController)
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -147,10 +152,16 @@ fun SignInScreen(navController: NavController) {
                             navController.navigate("mainScreen")
                         }
             }
-                Log.d( "myLog", auth.currentUser?.email!!)
                                 },
         )
         Text(text = signInError.value, style = TextStyle(fontSize = 15.sp, textAlign = TextAlign.Center), modifier = Modifier.padding(top = 15.dp))
+    }
+    if (isLoading) {
+        LoadingScreen(isLoading)
+        LaunchedEffect(Unit) {
+            delay(3000)
+            isLoading = false
+        }
     }
 }
 
@@ -166,16 +177,13 @@ private fun signIn(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     error.value = ""
-                    Log.d("myLog", "Login is successful!")
                     successfulSignIn = true
                     navController.navigate("mainScreen")
                 } else {
-                    Log.d("myLog", "Login is field!. No exception")
                     error.value = "Не верное сочетание почты и пароля\nПопробуйте ещё раз"
                 }
             }
     } catch (e: Exception) {
-        Log.d("myLog", "Login is field!")
         error.value = "Поля не могут быть пустыми"
     }
 }

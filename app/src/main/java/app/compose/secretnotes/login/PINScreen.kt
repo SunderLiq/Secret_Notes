@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.compose.secretnotes.R
 import app.compose.secretnotes.dataclasses.PINData
+import app.compose.secretnotes.dialog.LoadingScreen
 import app.compose.secretnotes.hashing.argon2
 import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
@@ -47,6 +48,8 @@ import app.compose.secretnotes.ui.theme.LightGreen20
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import java.nio.charset.Charset
 
 @Composable
@@ -302,17 +305,16 @@ fun PINScreen(navController: NavController) {
                     border = ButtonDefaults.outlinedButtonBorder(true),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.elevatedButtonElevation(2.dp),onClick = {
-                        if (pin.length == 4){
-                            fb.collection("Notes").document("usersPIN")
-                                .collection(auth.currentUser?.uid.toString()).document("PIN_Hash").set(
-                                    PINData(
-                                        argon2(pin, auth.currentUser?.uid.toString())!!
+                            if (pin.length == 4) {
+                                fb.collection("Notes").document("usersPIN")
+                                    .collection(auth.currentUser?.uid.toString())
+                                    .document("PIN_Hash").set(
+                                        PINData(
+                                            argon2(pin, auth.currentUser?.uid.toString())!!
+                                        )
                                     )
-                                )
-                            Log.d("myLog", argon2(pin, auth.currentUser?.uid.toString())!!)
-                            navController.navigate("mainScreen")
-                        }
-                        else pinError = "Пин-код должен содержать 4 символа"
+                                navController.navigate("mainScreen")
+                            } else pinError = "Пин-код должен содержать 4 символа"
                     }) {
                     Image(
                         painterResource(R.drawable.confirm_icon),
