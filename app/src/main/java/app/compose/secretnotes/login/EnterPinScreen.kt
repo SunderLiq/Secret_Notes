@@ -1,6 +1,5 @@
 package app.compose.secretnotes.login
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -45,17 +43,15 @@ import app.compose.secretnotes.dataclasses.PINData
 import app.compose.secretnotes.dialog.LoadingScreen
 import app.compose.secretnotes.dialog.successfulSignIn
 import app.compose.secretnotes.hashing.argon2
-import app.compose.secretnotes.hashing.hashing
 import app.compose.secretnotes.screens.main.DefaultIconWhite
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
-import app.compose.secretnotes.ui.theme.LightGreen20
+import app.compose.secretnotes.ui.theme.Green40
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.nio.charset.Charset
 
 @Composable
 fun EnterPinScreen(navController: NavController) {
@@ -373,6 +369,15 @@ fun EnterPinScreen(navController: NavController) {
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
+        Button(modifier = Modifier
+            .padding(1.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = DarkGreen20,
+                contentColor = Color.White
+            ),
+            onClick = {navController.navigate("ResetScreen") }) {
+            Text(text = "Забыли пароль?", style = TextStyle(fontSize = 20.sp), modifier = Modifier.padding(5.dp))
+        }
     }
     if (isLoading) {
         LoadingScreen(isLoading)

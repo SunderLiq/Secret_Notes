@@ -18,6 +18,7 @@ import app.compose.secretnotes.dialog.DeleteAccountDialog
 import app.compose.secretnotes.login.EnterPinScreen
 import app.compose.secretnotes.login.LogOut
 import app.compose.secretnotes.login.PINScreen
+import app.compose.secretnotes.login.ResetScreen
 import app.compose.secretnotes.login.SignInScreen
 import app.compose.secretnotes.login.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -148,6 +149,23 @@ fun MainScreen() {
         }
         composable("EnterPinScreen") {
             EnterPinScreen(navController)
+        }
+        composable("ResetScreen", enterTransition = {
+            return@composable slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(700)
+            )
+        },
+            exitTransition = {
+                return@composable slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Start,
+                    tween(700)
+                )
+            }) {
+            BackHandler(true) {
+                Log.i("myLog", "Clicked back")
+            }
+            ResetScreen(navController = navController)
         }
     }
 }
