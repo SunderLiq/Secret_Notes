@@ -44,10 +44,10 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ResetScreen(navController: NavController) {
-    val auth = Firebase.auth
     var userNameState by remember { mutableStateOf("") }
     val signInError = remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    val auth = Firebase.auth
 
     Column(
 
@@ -83,7 +83,7 @@ fun ResetScreen(navController: NavController) {
         Row {
             Button(
                 onClick = {
-                    navController.popBackStack()
+                    navController.navigate("SignInScreen")
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = Green40
@@ -96,7 +96,7 @@ fun ResetScreen(navController: NavController) {
             Button(
                 onClick = {
                     isLoading = true
-                    Reset(signInError, userNameState, navController)
+                    reset(signInError, userNameState, auth)
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White, containerColor = DarkGreen20
@@ -118,16 +118,17 @@ fun ResetScreen(navController: NavController) {
     }
 }
 
-private fun Reset(
+private fun reset(
     error: MutableState<String>,
     email: String,
-    navController: NavController
+    auth: FirebaseAuth
 ) {
     try {
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                         error.value = "Сообщение со сбросом отправлено на почту: $email"
+                        auth.signOut()
                 }
                 else error.value = "Проверьте правильность введенной почты"
             }
