@@ -21,6 +21,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,7 +47,6 @@ import app.compose.secretnotes.hashing.argon2
 import app.compose.secretnotes.screens.main.DefaultIconWhite
 import app.compose.secretnotes.ui.theme.DarkGreen20
 import app.compose.secretnotes.ui.theme.Gray20
-import app.compose.secretnotes.ui.theme.Green40
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -58,6 +58,7 @@ fun EnterPinScreen(navController: NavController) {
     val auth = Firebase.auth
     val fb = Firebase.firestore
     var pin by remember { mutableStateOf("") }
+    var pin_incorrect by remember { mutableIntStateOf(0) }
     var pinError by remember { mutableStateOf("") }
     val pattern = remember { Regex("^\\d+\$") }
     var isLoading by remember { mutableStateOf(false) }
@@ -350,16 +351,27 @@ fun EnterPinScreen(navController: NavController) {
                                                 )!! == task.result.toObject(PINData::class.java)?.pin!!
                                             ) {
                                                 pinError = ""
+                                                pin_incorrect = 0
                                                 successfulSignIn = true
                                                 navController.navigate("mainScreen")
                                             } else {
                                                 pinError = "Enter correct pin"
+                                                if(pin_incorrect>=10){
+                                                    auth.signOut()
+                                                    navController.navigate("SignInScreen")
+                                                }
+                                                pin_incorrect++
                                             }
                                         } else task.exception
                                     }
                             }
                     }
                         else pinError = "Enter correct pin"
+                        if(pin_incorrect>=10) {
+                            auth.signOut()
+                        navController.navigate("SignInScreen")
+                        }
+                        pin_incorrect++
                 }) {
                     Image(painterResource(R.drawable.confirm_icon),
                         contentDescription = "Confirm button",
